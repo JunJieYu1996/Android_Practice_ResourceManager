@@ -82,7 +82,8 @@ public class MyLineChartView extends View {
 
     private GestureDetector gestureDetector;
 
-    private String legendTitle = "患者填写";
+    private String legendTitle = "CPU0";
+    private String legendTitle_2 = "CPU1";
 
     private Context mycontext;
 
@@ -327,7 +328,7 @@ public class MyLineChartView extends View {
                 y, x + 2 * shortLine + getTextWidth(paintText, legendTitle) + 20 + 2 * shortLine, y, paintRed);
         canvas.drawCircle(x + 2 * shortLine + getTextWidth(paintText, legendTitle) + 20 + shortLine, y, bigCircleR, paintRed);
         canvas.drawCircle(x + 2 * shortLine + getTextWidth(paintText, legendTitle) + 20 + shortLine, y, smallCircleR, paintBack);
-        canvas.drawText("护士填写", x + 2 * shortLine + getTextWidth(paintText, legendTitle) + 30 + 2 * shortLine,
+        canvas.drawText(legendTitle_2, x + 2 * shortLine + getTextWidth(paintText, legendTitle) + 30 + 2 * shortLine,
                 y + getTextHeight(paintText, legendTitle) / 2 - 2, paintText);
         canvas.restore();
     }
