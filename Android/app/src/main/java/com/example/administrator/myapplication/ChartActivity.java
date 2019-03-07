@@ -37,8 +37,9 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 switch (msg.what){
                     case SHOW_RESPONSE:
                         String response=(String)msg.obj;
+                        setUsage_Data(response);
                         //进行UI操作，将结果显示到界面上
-                        responseText.setText(response);
+                        responseText.setText("load");
                     case TIME_PAUSE:
                         Toast.makeText(getApplicationContext(),"hello!-10s",Toast.LENGTH_LONG).show();
                 }
@@ -77,8 +78,8 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
 
         public void onClick(View v) {
             if(v.getId()==R.id.enter){
-                responseText.setText("1234");
-                //sendRequestWithHttpURLConnection();
+                //responseText.setText("1234");
+                sendRequestWithHttpURLConnection();
             }
             else if (v.getId()==R.id.test){
                 String[] show_test;
@@ -87,7 +88,6 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 yValues.clear();
                 for(int i =0;i < show_test.length;i++) {
                     yValues.add(Float.parseFloat(show_test[i]));
-                    //chartView.invalidate();
                     responseText.setText("change!");
                 }
             }
@@ -100,7 +100,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 public void run() {
                     HttpURLConnection connection=null;
                     try{
-                        URL url=new URL("https://www.baidu.com");
+                        URL url=new URL("http://192.168.20.52:8088/test2_war_exploded/json/hostCpuUsage?id=1");
                         connection=(HttpURLConnection)url.openConnection();
                         connection.setRequestMethod("GET");
                         connection.setConnectTimeout(8000);
@@ -130,6 +130,9 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 }
             }).start();
         }
+        //http://192.168.20.52:8088/test2_war_exploded/json/hostCpuUsage?id=1
+        //http://192.168.20.52:8088/test2_war_exploded/json/hostMemoryUsage?id=1
+        //http://192.168.20.52:8088/test2_war_exploded/json/hostNetUsage?id=1
 
         public static String[] getNumber(String str) {
             // 需要取整数和小数的字符串
@@ -159,6 +162,14 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 //Log.d("test", strs[i]);
             }
             return strs;
+        }
+
+        public void setUsage_Data(String Usage){
+            String[] Usage_Data = getNumber(Usage);
+            yValues.clear();
+            for(int i=0;i<10;i++){
+                yValues.add(Float.parseFloat(Usage_Data[i]));
+            }
         }
 
         public class TimerThread implements Runnable {
