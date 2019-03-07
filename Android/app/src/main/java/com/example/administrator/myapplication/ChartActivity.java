@@ -4,8 +4,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +25,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         MyLineChartView chartView;
         List<String> xValues;   //x轴数据集合
         List<Float> yValues;  //y轴数据集合
-        List<Integer> yValues_2;
+        List<Float> yValues_2;
         private Button sendRequest;
         private Button Stringsplit;
         public static final int SHOW_RESPONSE=0;//用于更新操作
@@ -36,12 +38,18 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 //如果返现msg.what=SHOW_RESPONSE，则进行制定操作，如想进行其他操作，则在子线程里将SHOW_RESPONSE改变
                 switch (msg.what){
                     case SHOW_RESPONSE:
-                        String response=(String)msg.obj;
-                        setUsage_Data(response);
+                        Bundle text_data = msg.getData();
+                        String Cpu_Data = text_data.getString("0");
+                        String Net_Data = text_data.getString("1");
+                        //String response=(String)msg.obj;
+                        setUsage_Data(Cpu_Data,0);
+                        setUsage_Data(Net_Data,1);
                         //进行UI操作，将结果显示到界面上
                         responseText.setText("load");
+                        break;
                     case TIME_PAUSE:
                         Toast.makeText(getApplicationContext(),"hello!-10s",Toast.LENGTH_LONG).show();
+                        break;
                 }
             }
         };
@@ -60,7 +68,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
             for (int i=0;i<10;i++){
                 xValues.add(Integer.toString(i));
                 yValues.add((float)i);
-                yValues_2.add(i+1);
+                yValues_2.add((float)i+1);
             }
             // xy轴集合自己添加数据
             chartView.setXValues(xValues);
@@ -79,6 +87,8 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         public void onClick(View v) {
             if(v.getId()==R.id.enter){
                 //responseText.setText("1234");
+                String attr = "Cpu";
+                int id = 1;
                 sendRequestWithHttpURLConnection();
             }
             else if (v.getId()==R.id.test){
@@ -99,26 +109,33 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void run() {
                     HttpURLConnection connection=null;
+                    String[] url_text = {"http://192.168.20.52:8088/test2_war_exploded/json/hostCpuUsage?id=1","http://192.168.20.52:8088/test2_war_exploded/json/hostNetUsage?id=1"};
                     try{
-                        URL url=new URL("http://192.168.20.52:8088/test2_war_exploded/json/hostCpuUsage?id=1");
-                        connection=(HttpURLConnection)url.openConnection();
-                        connection.setRequestMethod("GET");
-                        connection.setConnectTimeout(8000);
-                        connection.setReadTimeout(8000);
+                        Message message = new Message();
+                        message.what = SHOW_RESPONSE;
+                        Bundle data_text = new Bundle();
+                        for(int i =0 ; i<2 ; i++) {
 
-                        InputStream in=connection.getInputStream();
-                        //下面对获取到的输入流进行读取
-                        BufferedReader bufr=new BufferedReader(new InputStreamReader(in));
-                        StringBuilder response=new StringBuilder();
-                        String line=null;
-                        while((line=bufr.readLine())!=null){
-                            response.append(line);
+                            URL url = new URL(url_text[i]);
+                            connection = (HttpURLConnection) url.openConnection();
+                            connection.setRequestMethod("GET");
+                            connection.setConnectTimeout(8000);
+                            connection.setReadTimeout(8000);
+
+                            InputStream in = connection.getInputStream();
+                            //下面对获取到的输入流进行读取
+                            BufferedReader bufr = new BufferedReader(new InputStreamReader(in));
+                            StringBuilder response = new StringBuilder();
+                            String line = null;
+                            while ((line = bufr.readLine()) != null) {
+                                response.append(line);
+                            }
+                            //将服务器返回的数据存放到Message中
+                            data_text.putString(Integer.toString(i),response.toString());
+                            //message.obj = response.toString();
                         }
-
-                        Message message=new Message();
-                        message.what=SHOW_RESPONSE;
-                        //将服务器返回的数据存放到Message中
-                        message.obj=response.toString();
+                        message.setData(data_text);
+                        //message.sendToTarget();
                         handler.sendMessage(message);
                     }catch(Exception e){
                         e.printStackTrace();
@@ -164,12 +181,22 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
             return strs;
         }
 
-        public void setUsage_Data(String Usage){
+        public void setUsage_Data(String Usage,int choice){
             String[] Usage_Data = getNumber(Usage);
-            yValues.clear();
-            for(int i=0;i<10;i++){
-                yValues.add(Float.parseFloat(Usage_Data[i]));
+            switch (choice){
+                case 0:
+                    yValues.clear();
+                    for(int i=0;i<10;i++){
+                        yValues.add(Float.parseFloat(Usage_Data[i]));
+                    }
+                    break;
+                case 1:
+                    yValues_2.clear();
+                    for(int i=0;i<10;i++){
+                        yValues_2.add(Float.parseFloat(Usage_Data[i]));
+                    }
             }
+
         }
 
         public class TimerThread implements Runnable {

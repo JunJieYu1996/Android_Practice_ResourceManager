@@ -40,7 +40,7 @@ public class MyLineChartView extends View {
     private List<String> xValues;
 
     private List<Float> yValues;
-    private List<Integer> yValues_2;
+    private List<Float> yValues_2;
 
     private int mWidth; // 控件宽度
 
@@ -384,7 +384,7 @@ public class MyLineChartView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (yValues.size() < 7) {
+        if ((yValues.size() < 7)&&(yValues_2.size()<7)) {
             return false;
         }
         gestureDetector.onTouchEvent(event);
@@ -399,7 +399,7 @@ public class MyLineChartView extends View {
         this.yValues = values;
     }
 
-    public void setYValues_2(List<Integer>values){
+    public void setYValues_2(List<Float> values){
         this.yValues_2 = values;
     }
     /**
