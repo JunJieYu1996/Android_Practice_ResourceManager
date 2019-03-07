@@ -82,8 +82,8 @@ public class MyLineChartView extends View {
 
     private GestureDetector gestureDetector;
 
-    private String legendTitle = "CPU0";
-    private String legendTitle_2 = "CPU1";
+    private String legendTitle = "Net";
+    private String legendTitle_2 = "Cpu";
 
     private Context mycontext;
 
@@ -200,6 +200,9 @@ public class MyLineChartView extends View {
     private void drawBrokenLine(Canvas canvas) {
         canvas.save();
         // y轴文字
+        minValueY = 0;
+        maxValueY = 100;
+        /*
         minValueY = yValues.get(0);
         for (int i = 0; i < yValues.size(); i++) {
             // 找出y轴的最大最小值
@@ -220,6 +223,7 @@ public class MyLineChartView extends View {
                 minValueY = yValues_2.get(i);
             }
         }
+        */
         /////
         // 画折线
         float aver = (lableCountY - 1) * intervalY / (maxValueY - minValueY);

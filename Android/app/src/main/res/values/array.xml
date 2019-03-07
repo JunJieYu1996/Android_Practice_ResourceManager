@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Spinner_Data">
+        <item>物理机1</item>
+        <item>物理机2</item>
+        <item>物理机3</item>
+    </string-array>
+</resources>

@@ -22,6 +22,12 @@
         android:layout_height="wrap_content"
         android:text="字符串分割"/>
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:entries="@array/Spinner_Data"/>
+
     <com.example.administrator.myapplication.MyLineChartView
         android:id="@+id/linechartview"
         android:layout_width="fill_parent"
