@@ -41,6 +41,7 @@ public class MyLineChartView extends View {
 
     private List<Float> yValues;
     private List<Float> yValues_2;
+    private List<Float> yValues_3;
 
     private int mWidth; // 控件宽度
 
@@ -84,6 +85,7 @@ public class MyLineChartView extends View {
 
     private String legendTitle = "Net";
     private String legendTitle_2 = "Cpu";
+    private String legendTitle_3 = "Memory";
 
     private Context mycontext;
 
@@ -245,6 +247,15 @@ public class MyLineChartView extends View {
             }
         }
         canvas.drawPath(path, paintBlue);
+        path.reset();
+        for (int i = 0; i < yValues_3.size(); i++) {
+            if (i == 0) {
+                path.moveTo(firstPointX, mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver);
+            } else {
+                path.lineTo(firstPointX + i * intervalX, mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver);
+            }
+        }
+        canvas.drawPath(path, paintWhite);
         // 折线中的圆点
         for (int i = 0; i < yValues.size(); i++) {
             canvas.drawCircle(firstPointX + i * intervalX,
@@ -257,6 +268,12 @@ public class MyLineChartView extends View {
                     mHeight - paddingDown - leftRightExtra - yValues_2.get(i) * aver + minValueY * aver, bigCircleR, paintBlue);
             canvas.drawCircle(firstPointX + i * intervalX,
                     mHeight - paddingDown - leftRightExtra - yValues_2.get(i) * aver + minValueY * aver, smallCircleR, paintBack);
+        }
+        for (int i = 0; i < yValues_3.size(); i++) {
+            canvas.drawCircle(firstPointX + i * intervalX,
+                    mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver, bigCircleR, paintBlue);
+            canvas.drawCircle(firstPointX + i * intervalX,
+                    mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver, smallCircleR, paintBack);
         }
         //将折线超出x轴坐标的部分截取掉（左边）
         paintBack.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
@@ -334,6 +351,15 @@ public class MyLineChartView extends View {
         canvas.drawCircle(x + 2 * shortLine + getTextWidth(paintText, legendTitle) + 20 + shortLine, y, smallCircleR, paintBack);
         canvas.drawText(legendTitle_2, x + 2 * shortLine + getTextWidth(paintText, legendTitle) + 30 + 2 * shortLine,
                 y + getTextHeight(paintText, legendTitle) / 2 - 2, paintText);
+
+
+        canvas.drawLine(x + 2*(2 * shortLine + getTextWidth(paintText, legendTitle) + 20),
+                y, x + 2*(2 * shortLine + getTextWidth(paintText, legendTitle) + 20) + 2 * shortLine, y, paintWhite);
+        canvas.drawCircle(x + 2*(2 * shortLine + getTextWidth(paintText, legendTitle) + 20) + shortLine, y, bigCircleR, paintWhite);
+        canvas.drawCircle(x + 2*(2 * shortLine + getTextWidth(paintText, legendTitle) + 20) + shortLine, y, smallCircleR, paintBack);
+        canvas.drawText(legendTitle_3, x + 2*(2 * shortLine + getTextWidth(paintText, legendTitle) + 20) + 10 + 2 * shortLine,
+                y + getTextHeight(paintText, legendTitle) / 2 - 2, paintText);
+
         canvas.restore();
     }
 
@@ -406,6 +432,8 @@ public class MyLineChartView extends View {
     public void setYValues_2(List<Float> values){
         this.yValues_2 = values;
     }
+
+    public void setyValues_3(List<Float> values) {this.yValues_3 = values;}
     /**
      * 获取文字的宽度
      *
