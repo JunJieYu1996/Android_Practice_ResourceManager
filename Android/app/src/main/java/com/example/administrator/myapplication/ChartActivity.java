@@ -96,6 +96,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         new Thread(new TimerThread()).start();
+        Data_Checker();
     }
 
 
@@ -145,8 +146,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
 
     public void onClick(View v) {
         if(v.getId()==R.id.enter){
-            Data_Checker();
-            new Thread(new TimerThread_checker()).start();
+            int a=1;
         }
         else if (v.getId()==R.id.test){
             String[] show_test;
