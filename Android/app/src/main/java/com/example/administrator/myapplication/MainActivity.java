@@ -33,9 +33,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
           String UserPassword = user_password.getText().toString();
           if((UserName.equals("admin")) && (UserPassword.equals("admin"))){
               Toast.makeText(getApplicationContext(),"成功登录",Toast.LENGTH_SHORT).show();
-              Intent login = new Intent(MainActivity.this,ChartActivity.class);
+              Intent login = new Intent(MainActivity.this,MenuActivity.class);
               login.putExtra("UserName",UserName);
               startActivity(login);
+              user_name.setText("");
+              user_password.setText("");
           }
           else {
               Toast.makeText(getApplicationContext(),user_name.getText()+" "+user_password.getText(),Toast.LENGTH_LONG).show();

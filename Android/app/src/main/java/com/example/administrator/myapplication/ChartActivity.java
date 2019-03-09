@@ -39,6 +39,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
     private Button Stringsplit;
     private Spinner Server_choice;
     private TextView responseText;
+    private TopBar topBar;
 
     public static final int SHOW_RESPONSE = 0;//用于更新操作
     public static final int TIME_PAUSE = 1;
@@ -75,6 +76,18 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         responseText = (TextView)findViewById(R.id.input);
         Stringsplit = (Button)findViewById(R.id.test);
         Server_choice =(Spinner)findViewById(R.id.spinner);
+        topBar = (TopBar) findViewById(R.id.topbar_chart);
+        topBar.setOnLeftAndRightClickListener(new TopBar.OnLeftAndRightClickListener() {
+            @Override
+            public void OnLeftButtonClick() {
+                finish();//左边按钮实现的功能逻辑
+            }
+
+            @Override
+            public void OnRightButtonClick() {//右边按钮实现的功能逻辑
+                Toast.makeText(getApplicationContext(), "RightButton", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         sendRequest.setOnClickListener(this);
         Stringsplit.setOnClickListener(this);
@@ -96,7 +109,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         new Thread(new TimerThread()).start();
-        Data_Checker();
+        new Thread(new TimerThread_checker()).start();
     }
 
 
@@ -123,6 +136,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_LONG).show();
                     break;
                 case TIME_CHECKER:
+                    Data_Checker();
                     break;
                 case CHECKER_RESPONSE:
                     Bundle checker_data = msg.getData();
@@ -137,6 +151,7 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                             output = output + "服务器" + key + "," + value.toString() + "异常" + "\n";
                         }
                         responseText.setText(output);
+                        Log.d("test","checking");
                     }
                     break;
             }
