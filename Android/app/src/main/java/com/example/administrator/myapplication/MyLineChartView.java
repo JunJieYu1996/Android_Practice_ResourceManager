@@ -170,13 +170,14 @@ public class MyLineChartView extends View {
             // x轴箭头
             canvas.drawLine(mWidth - paddingRight, originY, mWidth - paddingRight - 15, originY + 10, paintWhite);
             canvas.drawLine(mWidth - paddingRight, originY, mWidth - paddingRight - 15, originY - 10, paintWhite);
-
+            canvas.drawText("周期", mWidth - paddingRight - 50, originY + 80, paintText);
             // x轴线上的刻度线
             canvas.drawLine(firstPointX + i * intervalX, originY, firstPointX + i * intervalX, originY - scaleHeight, paintWhite);
             // x轴上的文字
             canvas.drawText(xValues.get(i), firstPointX + i * intervalX - getTextWidth(paintText, "17.01") / 2,
                     originY + textToXYAxisGap + getTextHeight(paintText, "17.01"), paintText);
         }
+
         canvas.drawPath(path, paintWhite);
 
         // x轴虚线
@@ -324,6 +325,8 @@ public class MyLineChartView extends View {
             canvas.drawText(yTitles.get(i), originX - textToXYAxisGap - getTextWidth(paintText, "00.00"),
                     mHeight - paddingDown - leftRightExtra - i * intervalY + getTextHeight(paintText, "00.00") / 2, paintText);
         }
+        canvas.drawText("百分比", originX - textToXYAxisGap - getTextWidth(paintText, "00.00") ,
+                mHeight - paddingDown - leftRightExtra -  yTitles.size() * intervalY + getTextHeight(paintText, "00.00") / 2, paintText);
         // 截取折线超出部分（右边）
         paintBack.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
         RectF rectF = new RectF(mWidth - paddingRight, 0, mWidth, mHeight);
