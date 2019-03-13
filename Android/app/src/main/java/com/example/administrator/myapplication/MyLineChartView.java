@@ -436,7 +436,7 @@ public class MyLineChartView extends View {
         this.yValues_2 = values;
     }
 
-    public void setyValues_3(List<Float> values) {this.yValues_3 = values;}
+    public void setYValues_3(List<Float> values) {this.yValues_3 = values;}
     /**
      * 获取文字的宽度
      *

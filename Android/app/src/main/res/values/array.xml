@@ -5,4 +5,31 @@
         <item>物理机2</item>
         <item>物理机3</item>
     </string-array>
+
+    <string-array name="Spinner_History">
+        <item>前0-1小时数据</item>
+        <item>前1-2小时数据</item>
+        <item>前2-3小时数据</item>
+        <item>前3-4小时数据</item>
+        <item>前4-5小时数据</item>
+        <item>前5-6小时数据</item>
+        <item>前6-7小时数据</item>
+        <item>前7-8小时数据</item>
+        <item>前8-9小时数据</item>
+        <item>前9-10小时数据</item>
+        <item>前10-11小时数据</item>
+        <item>前11-12小时数据</item>
+        <item>前12-13小时数据</item>
+        <item>前13-14小时数据</item>
+        <item>前14-15小时数据</item>
+        <item>前15-16小时数据</item>
+        <item>前16-17小时数据</item>
+        <item>前17-18小时数据</item>
+        <item>前18-19小时数据</item>
+        <item>前19-20小时数据</item>
+        <item>前20-21小时数据</item>
+        <item>前21-22小时数据</item>
+        <item>前22-23小时数据</item>
+        <item>前23-24小时数据</item>
+    </string-array>
 </resources>

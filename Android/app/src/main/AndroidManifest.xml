@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ChartActivity" />
-        <activity android:name=".MenuActivity"></activity>
+        <activity android:name=".MenuActivity" />
+        <activity android:name=".HistroyActivity"></activity>
     </application>
 
 </manifest>

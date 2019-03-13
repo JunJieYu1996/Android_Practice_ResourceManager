@@ -19,32 +19,36 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChartActivity extends AppCompatActivity implements View.OnClickListener {
+public class ChartActivity extends AppCompatActivity {
     List<String> xValues;   //x轴数据集合
     List<Float> yValues;  //y轴数据集合
     List<Float> yValues_2;
     List<Float> yValues_3;
-    String test_str;
+    int xValues_change_flag = 0;
     static int Server_id = 1;
     static int Abnormal_Percentage = 50;
+    boolean stopThread = false;
 
     MyLineChartView chartView;
     private Button sendRequest;
     private Button Stringsplit;
     private Spinner Server_choice;
     private TextView responseText;
+    private TextView Timeshower;
     private TopBar topBar;
 
     public static final int SHOW_RESPONSE = 0;//用于更新操作
     public static final int TIME_PAUSE = 1;
     public static final int TEXT_HELPER = 2;
-    public static final int TIME_CHECKER = 3;
     public static final int CHECKER_RESPONSE = 4;
 
 
@@ -58,10 +62,20 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         yValues_2 = new ArrayList<>();
         yValues_3 = new ArrayList<>();
 
-        test_str="['0','0','0','0','0','0'，'0','0','0']";
-
-        for (int i=0;i<10;i++){
-            xValues.add(Integer.toString(i));
+        SimpleDateFormat sdf = new SimpleDateFormat("mm");
+        String date = sdf.format(new Date());
+        int int_date = Integer.parseInt(date);
+        int add_date ;
+        int x_date;
+        for (int i=0;i<12;i++){
+            add_date = int_date - 5 * (11 - i) ;
+            if(add_date >= 0){
+                x_date = (add_date/5)*5;
+            }
+            else {
+                x_date = ((60 + add_date) / 5) * 5;
+            }
+            xValues.add(Integer.toString(x_date));
             yValues.add((float)0);
             yValues_2.add((float)0);
             yValues_3.add((float)0);
@@ -70,16 +84,18 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         chartView.setXValues(xValues);
         chartView.setYValues(yValues);
         chartView.setYValues_2(yValues_2);
-        chartView.setyValues_3(yValues_3);
+        chartView.setYValues_3(yValues_3);
 
-        sendRequest = (Button) findViewById(R.id.enter);
+        TimerThread Timer_check = new TimerThread();
+
         responseText = (TextView)findViewById(R.id.input);
-        Stringsplit = (Button)findViewById(R.id.test);
+        Timeshower = (TextView)findViewById(R.id.time);
         Server_choice =(Spinner)findViewById(R.id.spinner);
         topBar = (TopBar) findViewById(R.id.topbar_chart);
         topBar.setOnLeftAndRightClickListener(new TopBar.OnLeftAndRightClickListener() {
             @Override
             public void OnLeftButtonClick() {
+                stopThread = true;
                 finish();//左边按钮实现的功能逻辑
             }
 
@@ -89,8 +105,6 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        sendRequest.setOnClickListener(this);
-        Stringsplit.setOnClickListener(this);
 
         Server_choice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
              //当选中某一个数据项时触发该方法
@@ -108,8 +122,16 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                 // TODO Auto-generated method stub
             }
         });
-        new Thread(new TimerThread()).start();
-        new Thread(new TimerThread_checker()).start();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
+        String date2 = sdf2.format(new Date());
+        Timeshower.setText("更新时间：" + date2);
+
+        new Thread(Timer_check).start();
+    }
+
+    protected void onDestroy() {
+        stopThread=true;
+        super.onDestroy();
     }
 
 
@@ -122,21 +144,30 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                     String Cpu_Data = text_data.getString("0");
                     String Net_Data = text_data.getString("1");
                     String Memory_Data = text_data.getString("2");
-                    //String response=(String)msg.obj;
+
                     setUsage_Data(Cpu_Data, 0);
                     setUsage_Data(Net_Data, 1);
                     setUsage_Data(Memory_Data, 2);
-                    //进行UI操作，将结果显示到界面上
-                    //responseText.setText("数据正常");
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                    SimpleDateFormat minu = new SimpleDateFormat("mm");
+                    String date = sdf.format(new Date());
+                    Timeshower.setText("更新时间：" + date);
+                    int minute = Integer.parseInt(minu.format(new Date()));
+                    if(((minute%5==0)||(minute%5==5))&&(xValues_change_flag == 0)){
+                        change_xValues();
+                        xValues_change_flag = 1;
+                    }
+                    else if (!((minute%5==0)||(minute%5==5))) {
+                        xValues_change_flag = 0;
+                    }
                     break;
                 case TIME_PAUSE:
                     sendRequestWithHttpURLConnection(Server_id);
+                    Data_Checker();
                     break;
                 case TEXT_HELPER:
                     Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_LONG).show();
-                    break;
-                case TIME_CHECKER:
-                    Data_Checker();
                     break;
                 case CHECKER_RESPONSE:
                     Bundle checker_data = msg.getData();
@@ -158,21 +189,32 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         }
     };
 
-
-    public void onClick(View v) {
-        if(v.getId()==R.id.enter){
-            int a=1;
+    public class TimerThread implements Runnable {
+        int time_pause;
+        public TimerThread(){
+            time_pause = 30000;
         }
-        else if (v.getId()==R.id.test){
-            String[] show_test;
-            show_test = getNumber(test_str);
-            yValues.clear();
-            for(int i =0;i < show_test.length;i++) {
-                yValues.add(Float.parseFloat(show_test[i]));
-                responseText.setText("change!");
+        public void setTime_pause(int millsecond){
+            time_pause = millsecond;
+        }
+
+        public void run() {
+            while (!stopThread) {
+                try {
+                    Thread.sleep(time_pause);// 线程暂停10秒，单位毫秒
+                    Message message = new Message();
+                    message.what = TIME_PAUSE;
+                    handler.sendMessage(message);// 发送消息
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
+
     }
+
+
 
 
     private void sendRequestWithHttpURLConnection(final int id){
@@ -273,6 +315,17 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                                 }
                                 //将服务器返回的数据存放到Message中
                                 String[] split_data = getNumber(response.toString());
+                                float float_data = Float.parseFloat(split_data[split_data.length-1]);
+                                if (float_data>Abnormal_Percentage) {
+                                    if (abnormal_attr.equals("")){
+                                        abnormal_attr = Attr[j];
+                                    }
+                                    else{
+                                        abnormal_attr = abnormal_attr + "," + Attr[j];
+                                    }
+                                }
+
+                                /*
                                 for(int k =0 ;k<10;k++){
                                     float float_data = Float.parseFloat(split_data[k]);
                                     //Log.d("url_text",Float.toString(float_data));
@@ -285,7 +338,8 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
                                         }
                                         break;
                                     }
-                                }
+                                 }
+                                 */
                             }
                             if(!abnormal_attr.equals(""))
                                 data_text.putString(Integer.toString(i), abnormal_attr);
@@ -348,19 +402,19 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
         switch (choice){
             case 0:
                 yValues.clear();
-                for(int i=0;i<10;i++){
+                for(int i=(Usage_Data.length-12);i<Usage_Data.length;i++){
                     yValues.add(Float.parseFloat(Usage_Data[i]));
                 }
                 break;
             case 1:
                 yValues_2.clear();
-                for(int i=0;i<10;i++){
+                for(int i=(Usage_Data.length-12);i<Usage_Data.length;i++){
                     yValues_2.add(Float.parseFloat(Usage_Data[i]));
                 }
                 break;
             case 2:
-                yValues_3.clear();;
-                for(int i=0;i<10;i++){
+                yValues_3.clear();
+                for(int i=(Usage_Data.length-12);i<Usage_Data.length;i++){
                     yValues_3.add(Float.parseFloat(Usage_Data[i]));
                 }
                 break;
@@ -368,49 +422,14 @@ public class ChartActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public class TimerThread implements Runnable {
-        int time_pause;
-        public TimerThread(){
-            time_pause = 10000;
+    public void change_xValues(){
+        String temp = xValues.get(0);
+        for(int i=0;i<xValues.size()-1;i++){
+            xValues.set(i,xValues.get(i+1));
         }
-        public void setTime_pause(int millsecond){
-            time_pause = millsecond;
-        }
-        public void run() {
-            while (true) {
-                try {
-                    Thread.sleep(time_pause);// 线程暂停10秒，单位毫秒
-                    Message message = new Message();
-                    message.what = TIME_PAUSE;
-                    handler.sendMessage(message);// 发送消息
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
+        xValues.set(xValues.size()-1,temp);
     }
 
-    public class TimerThread_checker implements Runnable {
-        int time_pause;
-        public TimerThread_checker(){
-            time_pause = 10000;
-        }
-        public void setTime_pause(int millsecond){
-            time_pause = millsecond;
-        }
-        public void run() {
-            while (true) {
-                try {
-                    Thread.sleep(time_pause);// 线程暂停10秒，单位毫秒
-                    Message message = new Message();
-                    message.what = TIME_CHECKER;
-                    handler.sendMessage(message);// 发送消息
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+
+
 }

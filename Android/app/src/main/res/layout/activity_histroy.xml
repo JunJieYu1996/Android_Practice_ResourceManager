@@ -8,39 +8,44 @@
     android:orientation="vertical">
 
     <com.example.administrator.myapplication.TopBar
-        android:id="@+id/topbar_chart"
+        android:id="@+id/topbar_history"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/material_blue_500"
         app:leftBackground="@drawable/left_button_selector"
         app:rightBackground="@drawable/right_button_selector"
-        app:titleText="流量监控"
+        app:titleText="历史流量查询"
         app:titleTextColor="#FFF"
         app:titleTextSize="6sp" />
 
     <TextView
-        android:id="@+id/input"
+        android:id="@+id/history_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="测试"
+        android:text="显示数据的范围"
         />
 
-    <TextView
-        android:id="@+id/time"
+    <Spinner
+        android:id="@+id/spinner_history"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="时间" />
-
+        android:layout_height="60dp"
+        android:entries="@array/Spinner_History"/>
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/spinner_history_server"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:entries="@array/Spinner_Data"/>
 
+    <Button
+        android:id="@+id/history_button"
+        android:text="确定"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <com.example.administrator.myapplication.MyLineChartView
-        android:id="@+id/linechartview"
+        android:id="@+id/linechartview_history"
         android:layout_width="fill_parent"
-        android:layout_height="400dp"
+        android:layout_height="370dp"
         />
 </LinearLayout>
