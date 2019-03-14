@@ -65,7 +65,7 @@ public class MyLineChartView extends View {
 
     private int leftRightExtra = intervalX / 3; //x轴左右向外延伸的长度
 
-    private int lableCountY = 6; // Y轴刻度个数
+    private int lableCountY = 11; // Y轴刻度个数
 
     private int bigCircleR = 7;
 
@@ -170,7 +170,7 @@ public class MyLineChartView extends View {
             // x轴箭头
             canvas.drawLine(mWidth - paddingRight, originY, mWidth - paddingRight - 15, originY + 10, paintWhite);
             canvas.drawLine(mWidth - paddingRight, originY, mWidth - paddingRight - 15, originY - 10, paintWhite);
-            canvas.drawText("周期", mWidth - paddingRight - 50, originY + 80, paintText);
+            canvas.drawText("分钟", mWidth - paddingRight - 50, originY + 80, paintText);
             // x轴线上的刻度线
             canvas.drawLine(firstPointX + i * intervalX, originY, firstPointX + i * intervalX, originY - scaleHeight, paintWhite);
             // x轴上的文字

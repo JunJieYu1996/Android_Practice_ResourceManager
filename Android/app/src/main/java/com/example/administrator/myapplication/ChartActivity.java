@@ -314,7 +314,7 @@ public class ChartActivity extends AppCompatActivity {
                                     response.append(line);
                                 }
                                 //将服务器返回的数据存放到Message中
-                                String[] split_data = getNumber(response.toString());
+                                String[] split_data = Tool.getNumber(response.toString());
                                 float float_data = Float.parseFloat(split_data[split_data.length-1]);
                                 if (float_data>Abnormal_Percentage) {
                                     if (abnormal_attr.equals("")){
@@ -367,55 +367,27 @@ public class ChartActivity extends AppCompatActivity {
             }).start();
         }
 
-    public static String[] getNumber(String str) {
-        // 需要取整数和小数的字符串
-        // 控制正则表达式的匹配行为的参数(小数)
-        String strs[] = str.split(",");
-        for(int i = 0;i < strs.length;i++) {
-            Pattern p = Pattern.compile("(\\d+\\.\\d+)");
-            //Matcher类的构造方法也是私有的,不能随意创建,只能通过Pattern.matcher(CharSequence input)方法得到该类的实例.
-            Matcher m = p.matcher(strs[i]);
-            //m.find用来判断该字符串中是否含有与"(\\d+\\.\\d+)"相匹配的子串
-            if (m.find()) {
-                //如果有相匹配的,则判断是否为null操作
-                //group()中的参数：0表示匹配整个正则，1表示匹配第一个括号的正则,2表示匹配第二个正则,在这只有一个括号,即1和0是一样的
-                strs[i] = m.group(1) == null ? "" : m.group(1);
-            } else {
-                //如果匹配不到小数，就进行整数匹配
-                p = Pattern.compile("(\\d+)");
-                m = p.matcher(strs[i]);
-                if (m.find()) {
-                    //如果有整数相匹配
-                    strs[i] = m.group(1) == null ? "" : m.group(1);
-                } else {
-                    //如果没有小数和整数相匹配,即字符串中没有整数和小数，就设为空
-                    strs[i] = "";
-                }
-            }
-        }
-        return strs;
-    }
 
     public void setUsage_Data(String Usage,int choice){
-        String[] Usage_Data = getNumber(Usage);
-        //Log.d("test",Integer.toString(Usage_Data.length));
+        String[] Usage_Data = Tool.getNumber(Usage);
+        String[] Useable_Data = Tool.invert_strs(Usage_Data);
         switch (choice){
             case 0:
                 yValues.clear();
-                for(int i=(Usage_Data.length-12);i<Usage_Data.length;i++){
-                    yValues.add(Float.parseFloat(Usage_Data[i]));
+                for(int i=(Useable_Data.length-12);i<Useable_Data.length;i++){
+                    yValues.add(Float.parseFloat(Useable_Data[i]));
                 }
                 break;
             case 1:
                 yValues_2.clear();
-                for(int i=(Usage_Data.length-12);i<Usage_Data.length;i++){
-                    yValues_2.add(Float.parseFloat(Usage_Data[i]));
+                for(int i=(Useable_Data.length-12);i<Useable_Data.length;i++){
+                    yValues_2.add(Float.parseFloat(Useable_Data[i]));
                 }
                 break;
             case 2:
                 yValues_3.clear();
-                for(int i=(Usage_Data.length-12);i<Usage_Data.length;i++){
-                    yValues_3.add(Float.parseFloat(Usage_Data[i]));
+                for(int i=(Useable_Data.length-12);i<Useable_Data.length;i++){
+                    yValues_3.add(Float.parseFloat(Useable_Data[i]));
                 }
                 break;
         }
