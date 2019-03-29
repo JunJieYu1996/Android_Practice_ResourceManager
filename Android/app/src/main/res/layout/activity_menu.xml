@@ -32,7 +32,7 @@
         android:id="@+id/imageButton2"
         android:layout_width="85dp"
         android:layout_height="78dp"
-        android:layout_marginLeft="72dp"
+        android:layout_marginLeft="80dp"
         android:layout_marginTop="108dp"
         android:background="@drawable/android_basic"
         app:layout_constraintLeft_toRightOf="@+id/imageButton"
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="95dp"
         android:layout_marginTop="7dp"
-        android:text="历史查询"
+        android:text="当日历史查询"
         app:layout_constraintLeft_toRightOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
 
@@ -72,9 +72,9 @@
     <ImageButton
         android:id="@+id/imageButton4"
         android:layout_width="85dp"
-        android:layout_height="78dp"
-        android:layout_marginLeft="75dp"
-        android:layout_marginTop="95dp"
+        android:layout_height="85dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="92dp"
         android:background="@drawable/android_basic"
         app:layout_constraintLeft_toRightOf="@+id/imageButton3"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -93,7 +93,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="95dp"
+        android:layout_marginLeft="105dp"
         android:layout_marginTop="7dp"
         android:text="TextView"
         app:layout_constraintLeft_toRightOf="@+id/textView3"
