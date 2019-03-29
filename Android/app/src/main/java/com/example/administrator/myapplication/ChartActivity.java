@@ -39,8 +39,6 @@ public class ChartActivity extends AppCompatActivity {
     boolean stopThread = false;
 
     MyLineChartView chartView;
-    private Button sendRequest;
-    private Button Stringsplit;
     private Spinner Server_choice;
     private TextView responseText;
     private TextView Timeshower;
@@ -164,7 +162,7 @@ public class ChartActivity extends AppCompatActivity {
                     break;
                 case TIME_PAUSE:
                     sendRequestWithHttpURLConnection(Server_id);
-                    Data_Checker();
+                    //Data_Checker_new();
                     break;
                 case TEXT_HELPER:
                     Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_LONG).show();
@@ -197,7 +195,6 @@ public class ChartActivity extends AppCompatActivity {
         public void setTime_pause(int millsecond){
             time_pause = millsecond;
         }
-
         public void run() {
             while (!stopThread) {
                 try {
@@ -211,7 +208,6 @@ public class ChartActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 
 
@@ -279,94 +275,6 @@ public class ChartActivity extends AppCompatActivity {
         //http://192.168.20.52:8088/test2_war_exploded/json/hostCpuUsage?id=1
         //http://192.168.20.52:8088/test2_war_exploded/json/hostMemoryUsage?id=1
         //http://192.168.20.52:8088/test2_war_exploded/json/hostNetUsage?id=1
-
-        private void Data_Checker(){
-            //开启线程来发起网络请求
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    HttpURLConnection connection=null;
-                    int link_flag = 1;
-                    String[] Attr = {"Cpu","Net","Memory"};
-                    try{
-                        Message message = new Message();
-                        message.what = CHECKER_RESPONSE;
-                        Bundle data_text = new Bundle();
-                        for(int i = 1 ; i < 4 ; i++) {
-                            String abnormal_attr = "";
-                            for(int j = 0 ; j<Attr.length ; j++) {
-                                String url_text = "http://192.168.20.52:8088/test2_war_exploded/json/host"+Attr[j]+"Usage?id="+ i;
-                                URL url = new URL(url_text);
-                                connection = (HttpURLConnection) url.openConnection();
-                                connection.setRequestMethod("GET");
-                                connection.setConnectTimeout(5000);
-                                connection.setReadTimeout(5000);
-                                InputStream in = connection.getInputStream();
-                                if (connection.getResponseCode() != 200) {
-                                    link_flag = 0;
-                                    break;
-                                }
-                                //下面对获取到的输入流进行读取
-                                BufferedReader bufr = new BufferedReader(new InputStreamReader(in));
-                                StringBuilder response = new StringBuilder();
-                                String line = null;
-                                while ((line = bufr.readLine()) != null) {
-                                    response.append(line);
-                                }
-                                //将服务器返回的数据存放到Message中
-                                String[] split_data = Tool.getNumber(response.toString());
-                                float float_data = Float.parseFloat(split_data[split_data.length-1]);
-                                if (float_data>Abnormal_Percentage) {
-                                    if (abnormal_attr.equals("")){
-                                        abnormal_attr = Attr[j];
-                                    }
-                                    else{
-                                        abnormal_attr = abnormal_attr + "," + Attr[j];
-                                    }
-                                }
-
-                                /*
-                                for(int k =0 ;k<10;k++){
-                                    float float_data = Float.parseFloat(split_data[k]);
-                                    //Log.d("url_text",Float.toString(float_data));
-                                    if(float_data>Abnormal_Percentage){
-                                        if (abnormal_attr.equals("")){
-                                            abnormal_attr = Attr[j];
-                                        }
-                                        else{
-                                            abnormal_attr = abnormal_attr + "," + Attr[j];
-                                        }
-                                        break;
-                                    }
-                                 }
-                                 */
-                            }
-                            if(!abnormal_attr.equals(""))
-                                data_text.putString(Integer.toString(i), abnormal_attr);
-                        }
-                        if(link_flag == 1) {
-                            message.setData(data_text);
-                            handler.sendMessage(message);
-                        }
-                        else {
-                            Toast.makeText(getApplicationContext(),"连接错误"+Integer.toString(connection.getResponseCode()),Toast.LENGTH_SHORT);
-                        }
-                    }catch(Exception e){
-                        Message msg = new Message();
-                        msg.what = TEXT_HELPER;
-                        msg.obj = "无法访问服务器";
-                        handler.sendMessage(msg);
-                        Log.d("test","无法访问服务器");
-                        e.printStackTrace();
-                    }finally {
-                        if(connection!=null){
-                            connection.disconnect();
-                        }
-                    }
-                }
-            }).start();
-        }
-
 
     public void setUsage_Data(String Usage,int choice){
         String[] Usage_Data = Tool.getNumber(Usage);
