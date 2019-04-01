@@ -21,7 +21,9 @@
         </activity>
         <activity android:name=".ChartActivity" />
         <activity android:name=".MenuActivity" />
-        <activity android:name=".HistroyActivity"></activity>
+        <activity android:name=".HistroyActivity" />
+        <activity android:name=".Day7HistoryActivity" />
+        <activity android:name=".OtherInformation"></activity>
     </application>
 
 </manifest>

@@ -35,7 +35,6 @@ public class ChartActivity extends AppCompatActivity {
     List<Float> yValues_3;
     int xValues_change_flag = 0;
     static int Server_id = 1;
-    static int Abnormal_Percentage = 50;
     boolean stopThread = false;
 
     MyLineChartView chartView;

@@ -33,7 +33,8 @@ public class MyLineChartView extends View {
 
     private int firstMaxX; //移动时第一个点的最大x值
 
-    private int intervalX = 130; // 坐标刻度的间隔
+    private int intervalX = 120; // 坐标刻度的间隔
+    private int intervalpointX = 120;
 
     private int intervalY = 80; // y轴刻度的间隔
 
@@ -82,6 +83,8 @@ public class MyLineChartView extends View {
     private int backGroundColor = Color.parseColor("#272727"); // view的背景颜色
 
     private GestureDetector gestureDetector;
+
+    private String xCanvas = "分钟";
 
     private String legendTitle = "Net";
     private String legendTitle_2 = "Cpu";
@@ -170,7 +173,7 @@ public class MyLineChartView extends View {
             // x轴箭头
             canvas.drawLine(mWidth - paddingRight, originY, mWidth - paddingRight - 15, originY + 10, paintWhite);
             canvas.drawLine(mWidth - paddingRight, originY, mWidth - paddingRight - 15, originY - 10, paintWhite);
-            canvas.drawText("分钟", mWidth - paddingRight - 50, originY + 80, paintText);
+            canvas.drawText(xCanvas, mWidth - paddingRight - 50, originY + 80, paintText);
             // x轴线上的刻度线
             canvas.drawLine(firstPointX + i * intervalX, originY, firstPointX + i * intervalX, originY - scaleHeight, paintWhite);
             // x轴上的文字
@@ -235,7 +238,7 @@ public class MyLineChartView extends View {
             if (i == 0) {
                 path.moveTo(firstPointX, mHeight - paddingDown - leftRightExtra - yValues.get(i) * aver + minValueY * aver);
             } else {
-                path.lineTo(firstPointX + i * intervalX, mHeight - paddingDown - leftRightExtra - yValues.get(i) * aver + minValueY * aver);
+                path.lineTo(firstPointX + i * intervalpointX, mHeight - paddingDown - leftRightExtra - yValues.get(i) * aver + minValueY * aver);
             }
         }
         canvas.drawPath(path, paintRed);
@@ -244,7 +247,7 @@ public class MyLineChartView extends View {
             if (i == 0) {
                 path.moveTo(firstPointX, mHeight - paddingDown - leftRightExtra - yValues_2.get(i) * aver + minValueY * aver);
             } else {
-                path.lineTo(firstPointX + i * intervalX, mHeight - paddingDown - leftRightExtra - yValues_2.get(i) * aver + minValueY * aver);
+                path.lineTo(firstPointX + i * intervalpointX, mHeight - paddingDown - leftRightExtra - yValues_2.get(i) * aver + minValueY * aver);
             }
         }
         canvas.drawPath(path, paintBlue);
@@ -253,27 +256,27 @@ public class MyLineChartView extends View {
             if (i == 0) {
                 path.moveTo(firstPointX, mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver);
             } else {
-                path.lineTo(firstPointX + i * intervalX, mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver);
+                path.lineTo(firstPointX + i * intervalpointX, mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver);
             }
         }
         canvas.drawPath(path, paintWhite);
         // 折线中的圆点
         for (int i = 0; i < yValues.size(); i++) {
-            canvas.drawCircle(firstPointX + i * intervalX,
-                    mHeight - paddingDown - leftRightExtra - yValues.get(i) * aver + minValueY * aver, bigCircleR, paintBlue);
-            canvas.drawCircle(firstPointX + i * intervalX,
+            canvas.drawCircle(firstPointX + i * intervalpointX,
+                    mHeight - paddingDown - leftRightExtra - yValues.get(i) * aver + minValueY * aver, bigCircleR, paintRed);
+            canvas.drawCircle(firstPointX + i * intervalpointX,
                     mHeight - paddingDown - leftRightExtra - yValues.get(i) * aver + minValueY * aver, smallCircleR, paintBack);
         }
         for (int i = 0; i < yValues_2.size(); i++) {
-            canvas.drawCircle(firstPointX + i * intervalX,
+            canvas.drawCircle(firstPointX + i * intervalpointX,
                     mHeight - paddingDown - leftRightExtra - yValues_2.get(i) * aver + minValueY * aver, bigCircleR, paintBlue);
-            canvas.drawCircle(firstPointX + i * intervalX,
+            canvas.drawCircle(firstPointX + i * intervalpointX,
                     mHeight - paddingDown - leftRightExtra - yValues_2.get(i) * aver + minValueY * aver, smallCircleR, paintBack);
         }
         for (int i = 0; i < yValues_3.size(); i++) {
-            canvas.drawCircle(firstPointX + i * intervalX,
-                    mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver, bigCircleR, paintBlue);
-            canvas.drawCircle(firstPointX + i * intervalX,
+            canvas.drawCircle(firstPointX + i * intervalpointX,
+                    mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver, bigCircleR, paintWhite);
+            canvas.drawCircle(firstPointX + i * intervalpointX,
                     mHeight - paddingDown - leftRightExtra - yValues_3.get(i) * aver + minValueY * aver, smallCircleR, paintBack);
         }
         //将折线超出x轴坐标的部分截取掉（左边）
@@ -366,7 +369,18 @@ public class MyLineChartView extends View {
         canvas.restore();
     }
 
+    public void setIntervalpointX(int new_X){
+        intervalpointX = new_X;
+    }
 
+    public void setCircleR(int bigR,int smallR){
+        bigCircleR = bigR;
+        smallCircleR = smallR;
+    }
+
+    public void setxCanvas(String str){
+        xCanvas = str ;
+    }
     /**
      * 手势事件
      */

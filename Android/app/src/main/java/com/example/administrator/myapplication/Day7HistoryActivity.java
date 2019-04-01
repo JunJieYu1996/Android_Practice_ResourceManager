@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,11 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class HistroyActivity extends AppCompatActivity implements View.OnClickListener{
+public class Day7HistoryActivity extends AppCompatActivity implements View.OnClickListener {
     private Spinner history_selector_time;
     private Spinner history_selector_server;
     private MyLineChartView chartView_history;
@@ -38,19 +34,17 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
     List<Float> yValues;  //y轴数据集合
     List<Float> yValues_2;
     List<Float> yValues_3;
-    int xValues_change_flag = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_histroy);
+        setContentView(R.layout.activity_day7_history);
 
-        chartView_history = (MyLineChartView) findViewById(R.id.linechartview_history);
-        history_selector_time = (Spinner) findViewById(R.id.spinner_history);
-        history_selector_server = (Spinner) findViewById(R.id.spinner_history_server);
-        history_text = (TextView) findViewById(R.id.history_text);
-        topBar_history = (TopBar) findViewById(R.id.topbar_history);
-        history_button = (Button) findViewById(R.id.history_button);
+        chartView_history = (MyLineChartView) findViewById(R.id.linechartview_history7);
+        history_selector_time = (Spinner) findViewById(R.id.spinner_history7);
+        history_selector_server = (Spinner) findViewById(R.id.spinner_history7_server);
+        history_text = (TextView) findViewById(R.id.history7_text);
+        topBar_history = (TopBar) findViewById(R.id.topbar_history7);
+        history_button = (Button) findViewById(R.id.history7_button);
 
         history_button.setOnClickListener(this);
 
@@ -59,22 +53,20 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
         yValues_2 = new ArrayList<>();
         yValues_3 = new ArrayList<>();
 
-        SimpleDateFormat sdf2 = new SimpleDateFormat("当前时间 YY-MM-dd 日 hh 时 mm 分");
+        SimpleDateFormat sdf = new SimpleDateFormat("hh");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("当前时间 YY-MM-dd 日 hh 时");
+        String date = sdf.format(new Date());
         String date2 = sdf2.format(new Date());
         history_text.setText(date2);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("mm");
-        String date = sdf.format(new Date());
         int int_date = Integer.parseInt(date);
         int add_date;
         int x_date;
-        for (int i = 0; i < 12; i++) {
-
-            add_date = int_date - 5 * (11 - i);
+        for (int i = 0; i < 24; i++) {
+            add_date = int_date - (23 - i);
             if (add_date >= 0) {
-                x_date = (add_date / 5) * 5;
+                x_date = add_date;
             } else {
-                x_date = ((60 + add_date) / 5) * 5;
+                x_date = 24 + add_date;
             }
             xValues.add(Integer.toString(x_date));
             yValues.add((float) 0);
@@ -82,6 +74,9 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
             yValues_3.add((float) 1);
         }
         // xy轴集合自己添加数据
+        chartView_history.setIntervalpointX(10);
+        chartView_history.setxCanvas("小时");
+        chartView_history.setCircleR(1,0);
         chartView_history.setXValues(xValues);
         chartView_history.setYValues(yValues);
         chartView_history.setYValues_2(yValues_2);
@@ -99,11 +94,10 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
                 Toast.makeText(getApplicationContext(), "RightButton", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
     public void onClick(View v) {
-        if(v.getId()==R.id.history_button){
-            sendRequestWithHttpURLConnection((int)history_selector_server.getSelectedItemId()+1);
+        if(v.getId()==R.id.history7_button){
+            sendRequestWithHttpURLConnection((int)history_selector_server.getSelectedItemId()+1,(int)history_selector_time.getSelectedItemId());
         }
     }
     private Handler handler = new Handler() {
@@ -119,17 +113,8 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
                     setUsage_Data(Cpu_Data, 0);
                     setUsage_Data(Net_Data, 1);
                     setUsage_Data(Memory_Data, 2);
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                    SimpleDateFormat minu = new SimpleDateFormat("mm");
-                    int minute = Integer.parseInt(minu.format(new Date()));
-                    if (((minute % 5 == 0) || (minute % 5 == 5)) && (xValues_change_flag == 0)) {
-                        change_xValues();
-                        xValues_change_flag = 1;
-                    } else if (!((minute % 5 == 0) || (minute % 5 == 5))) {
-                        xValues_change_flag = 0;
-                    }
                     break;
+
                 case TEXT_HELPER:
                     Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_LONG).show();
                     break;
@@ -138,7 +123,7 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
-    private void sendRequestWithHttpURLConnection(final int id) {
+    private void sendRequestWithHttpURLConnection(final int id,final int day) {
         //开启线程来发起网络请求
         new Thread(new Runnable() {
             @Override
@@ -146,9 +131,9 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
                 HttpURLConnection connection = null;
                 int link_flag = 1;
                 String[] url_text = {
-                        "http://192.168.20.52:8088/test2_war_exploded/json/hostCpuUsage?id=" + id,
-                        "http://192.168.20.52:8088/test2_war_exploded/json/hostNetUsage?id=" + id,
-                        "http://192.168.20.52:8088/test2_war_exploded/json/hostMemoryUsage?id=" + id};
+                        "http://192.168.20.52:8088/test2_war_exploded/json/hostCpuUsage_new?id=" + id + "&day=" + day,
+                        "http://192.168.20.52:8088/test2_war_exploded/json/hostNetUsage_new?id=" + id + "&day=" + day,
+                        "http://192.168.20.52:8088/test2_war_exploded/json/hostMemoryUsage_new?id=" + id + "&day=" + day};
                 try {
                     Message message = new Message();
                     message.what = SHOW_RESPONSE;
@@ -164,7 +149,6 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
                             link_flag = 0;
                             break;
                         }
-
                         //下面对获取到的输入流进行读取
                         BufferedReader bufr = new BufferedReader(new InputStreamReader(in));
                         StringBuilder response = new StringBuilder();
@@ -201,35 +185,25 @@ public class HistroyActivity extends AppCompatActivity implements View.OnClickLi
     public void setUsage_Data(String Usage, int choice) {
         String[] Usage_Data = Tool.getNumber(Usage);
         String[] Useable_Data = Tool.invert_strs(Usage_Data);
-        int time_index = (int) history_selector_time.getSelectedItemId()+1;
-        //Log.d("test",Integer.toString(Usage_Data.length));
         switch (choice) {
             case 0:
                 yValues.clear();
-                for (int i = (Useable_Data.length - 12*time_index); i < Useable_Data.length-12*(time_index-1); i++) {
+                for (int i = 0; i < 288; i++) {
                     yValues.add(Float.parseFloat(Useable_Data[i]));
                 }
                 break;
             case 1:
                 yValues_2.clear();
-                for (int i = (Useable_Data.length - 12*time_index); i < Useable_Data.length-12*(time_index-1); i++) {
+                for (int i = 0; i < 288; i++) {
                     yValues_2.add(Float.parseFloat(Useable_Data[i]));
                 }
                 break;
             case 2:
                 yValues_3.clear();
-                for (int i = (Useable_Data.length - 12*time_index); i < Useable_Data.length-12*(time_index-1); i++) {
+                for (int i = 0; i < 288; i++) {
                     yValues_3.add(Float.parseFloat(Useable_Data[i]));
                 }
                 break;
         }
     }
-    public void change_xValues(){
-        String temp = xValues.get(0);
-        for(int i=0;i<xValues.size()-1;i++){
-            xValues.set(i,xValues.get(i+1));
-        }
-        xValues.set(xValues.size()-1,temp);
-    }
 }
-

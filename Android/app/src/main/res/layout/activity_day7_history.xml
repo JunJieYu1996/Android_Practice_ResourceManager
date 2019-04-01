@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+tools:context=".ChartActivity"
+android:orientation="vertical">
+
+<com.example.administrator.myapplication.TopBar
+    android:id="@+id/topbar_history7"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/material_blue_500"
+    app:leftBackground="@drawable/left_button_selector"
+    app:rightBackground="@drawable/right_button_selector"
+    app:titleText="七日历史流量查询"
+    app:titleTextColor="#FFF"
+    app:titleTextSize="6sp" />
+
+<TextView
+    android:id="@+id/history7_text"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="显示数据的范围"
+    />
+
+<Spinner
+    android:id="@+id/spinner_history7"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:entries="@array/Spinner_History7"/>
+
+<Spinner
+    android:id="@+id/spinner_history7_server"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:entries="@array/Spinner_Data"/>
+
+<Button
+    android:id="@+id/history7_button"
+    android:text="确定"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+
+<com.example.administrator.myapplication.MyLineChartView
+    android:id="@+id/linechartview_history7"
+    android:layout_width="fill_parent"
+    android:layout_height="370dp"
+    />
+</LinearLayout>

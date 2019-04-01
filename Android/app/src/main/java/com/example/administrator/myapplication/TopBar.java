@@ -22,7 +22,6 @@ public class TopBar extends RelativeLayout {
     //按钮点击接口
     public interface OnLeftAndRightClickListener {
         void OnLeftButtonClick();
-
         void OnRightButtonClick();
     }
     //设置左边按钮的可见性

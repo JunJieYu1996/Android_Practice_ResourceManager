@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OtherInformation">
+
+    <com.example.administrator.myapplication.TopBar
+        android:id="@+id/topbar_chart"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/material_blue_500"
+        app:leftBackground="@drawable/left_button_selector"
+        app:rightBackground="@drawable/right_button_selector"
+        app:titleText="其他数据"
+        app:titleTextColor="#FFF"
+        app:titleTextSize="6sp" />
+
+    <com.example.administrator.myapplication.Table
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/topbar_chart"/>
+
+</android.support.constraint.ConstraintLayout>

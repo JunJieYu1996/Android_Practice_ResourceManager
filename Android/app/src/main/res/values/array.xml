@@ -32,4 +32,13 @@
         <item>前22-23小时数据</item>
         <item>前23-24小时数据</item>
     </string-array>
+    <string-array name="Spinner_History7">
+        <item>本日数据</item>
+        <item>前一日数据</item>
+        <item>前二日数据</item>
+        <item>前三日数据</item>
+        <item>前四日数据</item>
+        <item>前五日数据</item>
+        <item>前六日数据</item>
+    </string-array>
 </resources>

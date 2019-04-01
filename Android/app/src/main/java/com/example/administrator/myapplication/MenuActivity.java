@@ -23,6 +23,8 @@ import java.util.Set;
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageButton Menu_One;
     private ImageButton Menu_Two;
+    private ImageButton Menu_Three;
+    private ImageButton Menu_Four;
     private TextView responseText;
     private TextView Timeshower;
     static int Abnormal_Percentage = 50;
@@ -35,10 +37,14 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_menu);
         Menu_One = (ImageButton)findViewById(R.id.imageButton);
         Menu_Two = (ImageButton)findViewById(R.id.imageButton2);
+        Menu_Three = (ImageButton)findViewById(R.id.imageButton3);
+        Menu_Four = (ImageButton)findViewById(R.id.imageButton4);
         responseText = (TextView) findViewById(R.id.warnText);
         Timeshower = (TextView)findViewById(R.id.time);
         Menu_One.setOnClickListener(this);
         Menu_Two.setOnClickListener(this);
+        Menu_Three.setOnClickListener(this);
+        Menu_Four.setOnClickListener(this);
         SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
         String date2 = sdf2.format(new Date());
         Timeshower.setText("更新时间：" + date2);
@@ -55,6 +61,14 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         else if(v.getId()==R.id.imageButton2){
             Intent history = new Intent(MenuActivity.this,HistroyActivity.class);
             startActivity(history);
+        }
+        else if(v.getId()==R.id.imageButton3){
+            Intent history7 = new Intent(MenuActivity.this,Day7HistoryActivity.class);
+            startActivity(history7);
+        }
+        else if(v.getId()==R.id.imageButton4){
+            Intent otherInform = new Intent(MenuActivity.this,OtherInformation.class);
+            startActivity(otherInform);
         }
     }
 
