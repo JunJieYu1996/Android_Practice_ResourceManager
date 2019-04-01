@@ -7,7 +7,7 @@
     tools:context=".MenuActivity">
 
     <com.example.administrator.myapplication.TopBar
-        android:id="@+id/topbar_chart"
+        android:id="@+id/topbar_menu"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/material_blue_500"
@@ -26,7 +26,7 @@
         android:layout_marginTop="108dp"
         android:background="@drawable/android_basic"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topbar_chart" />
+        app:layout_constraintTop_toBottomOf="@+id/topbar_menu" />
 
     <ImageButton
         android:id="@+id/imageButton2"
@@ -36,7 +36,7 @@
         android:layout_marginTop="108dp"
         android:background="@drawable/android_basic"
         app:layout_constraintLeft_toRightOf="@+id/imageButton"
-        app:layout_constraintTop_toBottomOf="@+id/topbar_chart" />
+        app:layout_constraintTop_toBottomOf="@+id/topbar_menu" />
 
     <TextView
         android:id="@+id/textView"
@@ -108,7 +108,7 @@
         android:layout_marginTop="24dp"
         android:text="时间"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topbar_chart" />
+        app:layout_constraintTop_toBottomOf="@+id/topbar_menu" />
 
     <TextView
         android:id="@+id/warnText"
@@ -119,6 +119,6 @@
         android:layout_marginTop="24dp"
         android:text="无"
         app:layout_constraintStart_toEndOf="@+id/time"
-        app:layout_constraintTop_toBottomOf="@+id/topbar_chart" />
+        app:layout_constraintTop_toBottomOf="@+id/topbar_menu" />
 
 </android.support.constraint.ConstraintLayout>

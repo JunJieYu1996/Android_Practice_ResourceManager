@@ -298,7 +298,6 @@ public class ChartActivity extends AppCompatActivity {
                 }
                 break;
         }
-
     }
 
     public void change_xValues(){

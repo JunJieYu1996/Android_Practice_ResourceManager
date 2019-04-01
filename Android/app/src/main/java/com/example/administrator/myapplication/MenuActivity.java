@@ -27,7 +27,9 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton Menu_Four;
     private TextView responseText;
     private TextView Timeshower;
+    private TopBar topBar;
     static int Abnormal_Percentage = 50;
+    boolean stopThread = false;
     public static final int TIME_PAUSE = 1;
     public static final int TEXT_HELPER = 2;
     public static final int CHECKER_RESPONSE = 4;
@@ -48,8 +50,22 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
         String date2 = sdf2.format(new Date());
         Timeshower.setText("更新时间：" + date2);
+        topBar = (TopBar) findViewById(R.id.topbar_menu);
+        topBar.setOnLeftAndRightClickListener(new TopBar.OnLeftAndRightClickListener() {
+            @Override
+            public void OnLeftButtonClick() {
+                stopThread = true;
+                finish();//左边按钮实现的功能逻辑
+            }
+
+            @Override
+            public void OnRightButtonClick() {//右边按钮实现的功能逻辑
+                Toast.makeText(getApplicationContext(), "RightButton", Toast.LENGTH_SHORT).show();
+            }
+        });
         TimerThread Timer_check = new TimerThread();
         new Thread(Timer_check).start();
+        Data_Checker_new();
     }
 
     public void onClick(View v) {
@@ -181,7 +197,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
             time_pause = millsecond;
         }
         public void run() {
-            while (true) {
+            while (!stopThread) {
                 try {
                     Thread.sleep(time_pause);// 线程暂停10秒，单位毫秒
                     Message message = new Message();
