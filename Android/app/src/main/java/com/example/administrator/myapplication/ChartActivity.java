@@ -14,6 +14,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,6 +44,9 @@ public class ChartActivity extends AppCompatActivity {
     private TextView responseText;
     private TextView Timeshower;
     private TopBar topBar;
+    private TextView NetText;
+    private TextView CpuText;
+    private TextView MemoryText;
 
     public static final int SHOW_RESPONSE = 0;//用于更新操作
     public static final int TIME_PAUSE = 1;
@@ -88,6 +93,10 @@ public class ChartActivity extends AppCompatActivity {
         responseText = (TextView)findViewById(R.id.input);
         Timeshower = (TextView)findViewById(R.id.time);
         Server_choice =(Spinner)findViewById(R.id.spinner);
+        NetText = (TextView)findViewById(R.id.output_net);
+        CpuText = (TextView)findViewById(R.id.output_cpu);
+        MemoryText = (TextView)findViewById(R.id.output_memory);
+
         topBar = (TopBar) findViewById(R.id.topbar_chart);
         topBar.setOnLeftAndRightClickListener(new TopBar.OnLeftAndRightClickListener() {
             @Override
@@ -113,6 +122,8 @@ public class ChartActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view,int position, long id) {
                 Server_id = (int)Server_choice.getSelectedItemId()+1;//从spinner中获取被选择的数据
                 sendRequestWithHttpURLConnection(Server_id);
+                Data_Checker_new(Server_id);
+                responseText.setText("当前显示服务器:"+Integer.toString(Server_id));
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -125,6 +136,7 @@ public class ChartActivity extends AppCompatActivity {
 
         new Thread(Timer_check).start();
     }
+
 
     protected void onDestroy() {
         stopThread=true;
@@ -161,26 +173,20 @@ public class ChartActivity extends AppCompatActivity {
                     break;
                 case TIME_PAUSE:
                     sendRequestWithHttpURLConnection(Server_id);
+                    Data_Checker_new(Server_id);
                     //Data_Checker_new();
                     break;
                 case TEXT_HELPER:
                     Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_LONG).show();
                     break;
                 case CHECKER_RESPONSE:
-                    Bundle checker_data = msg.getData();
-                    String output = "";
-                    Set<String> keySet = checker_data.keySet();
-                    if(keySet.isEmpty()){
-                        responseText.setText("数据正常");
-                    }
-                    else {
-                        for (String key : keySet) {
-                            Object value = checker_data.get(key);
-                            output = output + "服务器" + key + "," + value.toString() + "异常" + "\n";
-                        }
-                        responseText.setText(output);
-                        Log.d("test","checking");
-                    }
+                    Bundle text_data_2 = msg.getData();
+                    String Net_Data_now = text_data_2.getString("0");
+                    String Cpu_Data_now = text_data_2.getString("1");
+                    String Memory_Data_now = text_data_2.getString("2");
+                    NetText.setText(Net_Data_now);
+                    CpuText.setText(Cpu_Data_now);
+                    MemoryText.setText(Memory_Data_now);
                     break;
             }
         }
@@ -208,8 +214,6 @@ public class ChartActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
 
     private void sendRequestWithHttpURLConnection(final int id){
@@ -275,6 +279,63 @@ public class ChartActivity extends AppCompatActivity {
         //http://192.168.20.52:8088/test2_war_exploded/json/hostMemoryUsage?id=1
         //http://192.168.20.52:8088/test2_war_exploded/json/hostNetUsage?id=1
 
+
+    private void Data_Checker_new(final int id){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection=null;
+                int link_flag = 1;
+                try{
+                    Message message = new Message();
+                    message.what = CHECKER_RESPONSE;
+                    Bundle data_text = new Bundle();
+                    String url_text = "http://192.168.20.52:8088/test2_war_exploded/json/hostNewUsage?id="+ id;
+                    URL url = new URL(url_text);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(5000);
+                    connection.setReadTimeout(5000);
+                    InputStream in = connection.getInputStream();
+                    if (connection.getResponseCode() != 200) {
+                        link_flag = 0;
+                    }
+                    //下面对获取到的输入流进行读取
+                    BufferedReader bufr = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder response = new StringBuilder();
+                    String line = null;
+                    while ((line = bufr.readLine()) != null) {
+                        response.append(line);
+                    }
+                    //将服务器返回的数据存放到Message中
+                    String[] split_data = Tool.getNumber(response.toString());
+                    for(int i = 0; i<3 ; i++){
+                        data_text.putString(Integer.toString(i),split_data[i]);
+                    }
+                    if(link_flag == 1) {
+                        message.setData(data_text);
+                        handler.sendMessage(message);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"连接错误"+Integer.toString(connection.getResponseCode()),Toast.LENGTH_SHORT);
+                    }
+                }catch(Exception e){
+                    Message msg = new Message();
+                    msg.what = TEXT_HELPER;
+                    msg.obj = "无法访问服务器";
+                    handler.sendMessage(msg);
+                    Log.d("test","无法访问服务器");
+                    e.printStackTrace();
+                }finally {
+                    if(connection!=null){
+                        connection.disconnect();
+                    }
+                }
+            }
+        }).start();
+    }
+
+
     public void setUsage_Data(String Usage,int choice){
         String[] Usage_Data = Tool.getNumber(Usage);
         String[] Useable_Data = Tool.invert_strs(Usage_Data);
@@ -299,6 +360,7 @@ public class ChartActivity extends AppCompatActivity {
                 break;
         }
     }
+
 
     public void change_xValues(){
         String temp = xValues.get(0);

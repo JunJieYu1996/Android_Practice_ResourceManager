@@ -38,6 +38,46 @@
         android:layout_height="60dp"
         android:entries="@array/Spinner_Data"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="网络利用率"
+            android:paddingHorizontal="3dp" />
+        <TextView
+            android:id="@+id/output_net"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无数据"
+            android:paddingHorizontal="3dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CPU利用率"
+            android:paddingHorizontal="3dp"/>
+        <TextView
+            android:id="@+id/output_cpu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无数据"
+            android:paddingHorizontal="3dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="内存利用率"
+            android:paddingHorizontal="3dp"/>
+        <TextView
+            android:id="@+id/output_memory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无数据"
+            android:paddingHorizontal="3dp"/>
+    </LinearLayout>
+
     <com.example.administrator.myapplication.MyLineChartView
         android:id="@+id/linechartview"
         android:layout_width="fill_parent"

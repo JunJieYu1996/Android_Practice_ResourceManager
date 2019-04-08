@@ -24,7 +24,7 @@
         android:layout_height="78dp"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="108dp"
-        android:background="@drawable/android_basic"
+        android:background="@drawable/ic_menu"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topbar_menu" />
 
@@ -34,7 +34,7 @@
         android:layout_height="78dp"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="108dp"
-        android:background="@drawable/android_basic"
+        android:background="@drawable/ic_menu"
         app:layout_constraintLeft_toRightOf="@+id/imageButton"
         app:layout_constraintTop_toBottomOf="@+id/topbar_menu" />
 
@@ -44,7 +44,7 @@
         android:layout_height="0dp"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="4dp"
-        android:text="当前流量查询"
+        android:text="当前状态查询"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
@@ -65,7 +65,7 @@
         android:layout_height="78dp"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="95dp"
-        android:background="@drawable/android_basic"
+        android:background="@drawable/ic_menu"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -75,7 +75,7 @@
         android:layout_height="85dp"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="92dp"
-        android:background="@drawable/android_basic"
+        android:background="@drawable/ic_menu"
         app:layout_constraintLeft_toRightOf="@+id/imageButton3"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
